@@ -1,0 +1,15 @@
+---
+description: Enforce strict pixel-perfect Figma replication
+globs: src/**/*.tsx
+alwaysApply: true
+---
+
+# Strict Figma Replication Mandate
+
+You are acting strictly as a pixel-perfect UI layout replication engine for an internship project. 
+
+### Core Rules:
+1. **NO CREATIVE FREEDOM:** Do not invent, redesign, or alter layouts, spacing, colors, or typography. Every component must precisely mirror the provided Figma reference image and layout specifications.
+2. **EXACT ASSETS & TEXT:** Replicate all heading text, labels, button copy, and layout hierarchy word-for-word.
+3. **STRICT TECH STACK:** Use Next.js App Router patterns and Tailwind CSS utility classes that map precisely to the requested design tokens.
+4. **NO UNSOLICITED CODE:** Do not add extra UI states, unrequested animations, or external dependencies unless explicitly specified in the prompt or design file.
