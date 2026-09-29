@@ -159,18 +159,20 @@ export function isolateFace(sourceUrl: string, face: FaceContour, fit: FrameFit)
         // crop is taken from the original pixels, not the JPEG on screen.
         const toSourceX = (value: number) => (value - fit.dx) / scale;
         const toSourceY = (value: number) => (value - fit.dy) / scale;
-        let x0 = toSourceX(face.coreMinX);
-        let y0 = toSourceY(face.coreMinY);
-        let x1 = toSourceX(face.coreMaxX);
-        let y1 = toSourceY(face.coreMaxY);
+        let x0 = toSourceX(face.minX);
+        let y0 = toSourceY(face.minY);
+        let x1 = toSourceX(face.maxX);
+        let y1 = toSourceY(face.maxY);
         const faceWidth = Math.max(1, x1 - x0);
         const faceHeight = Math.max(1, y1 - y0);
-        // A square on the head. Extra room around a close-up pulls the wall
-        // and the boxes into the reader, and that crop comes back near 1% Black.
-        const side = Math.max(faceWidth, faceHeight) * 1.35;
+        // The square is the whole head, forehead through chin. A crop that
+        // is only the cheek makes the sex call flip: the same face comes
+        // back female on one request and male on the next.
+        const side = Math.max(faceWidth, faceHeight) * 1.2;
         const centerX = (x0 + x1) / 2;
+        const centerY = (y0 + y1) / 2;
         x0 = centerX - side / 2;
-        y0 = y0 - faceHeight * 0.42;
+        y0 = centerY - side * 0.58;
         x1 = centerX + side / 2;
         y1 = y0 + side;
         const sx = Math.max(0, Math.floor(x0));

@@ -7,9 +7,10 @@
  * The service classifies the pixels it receives. A PNG crop is forwarded as
  * those bytes. RGB stays in canvas order, with no equalize, invert, or
  * brightness lift, and no JPEG pass on the way out.
- * One photo is one request. The race, age, and sex lists are that response,
- * with each fraction turned into a percent. A second call of the same pixels
- * is a different response, so those lists are not mixed together.
+ * The service can call the same face female on one request and male on the
+ * next. Several reads run together. The lists on screen are one of those
+ * responses, the middle one among the reads that share the majority sex.
+ * The percentages are not averaged.
  */
 export type ConfidenceScore = {
   name: string;
@@ -35,18 +36,58 @@ type RawGroups = {
   sex?: ScoreMap;
 };
 
+const READS = 5;
+
 export async function analyzePortrait(dataUrl: string): Promise<PortraitAnalysis> {
   const image = await readerPayload(dataUrl);
-  const chosen = await readOnce(image);
-  if (!chosen.race || !chosen.age || !(chosen.gender ?? chosen.sex)) {
+  const settled = await Promise.all(
+    Array.from({ length: READS }, () => readOnce(image).catch(() => null)),
+  );
+  const reads = settled.filter((item): item is RawGroups => {
+    if (!item?.race || !item.age) return false;
+    return Boolean(item.gender ?? item.sex);
+  });
+  if (!reads.length) {
     throw new Error("The portrait could not be read.");
   }
+  const chosen = agreeOnSex(reads);
   const gender = chosen.gender ?? chosen.sex;
   return {
-    race: toScores(chosen.race),
-    age: toScores(chosen.age),
+    race: toScores(chosen.race ?? {}),
+    age: toScores(chosen.age ?? {}),
     sex: toScores(gender ?? {}),
   };
+}
+
+function sexShares(item: RawGroups) {
+  const group = item.gender ?? item.sex ?? {};
+  const male = typeof group.male === "number" ? group.male : Number(group.male ?? 0);
+  const female = typeof group.female === "number" ? group.female : Number(group.female ?? 0);
+  return {
+    male: Number.isFinite(male) ? male : 0,
+    female: Number.isFinite(female) ? female : 0,
+  };
+}
+
+function agreeOnSex(reads: RawGroups[]) {
+  const males = reads.filter((item) => sexShares(item).male >= sexShares(item).female);
+  const females = reads.filter((item) => sexShares(item).female > sexShares(item).male);
+  let pool = males.length >= females.length ? males : females;
+  if (males.length === females.length) {
+    // The median ignores one 98% flip. A single female call cannot drag a
+    // tied set across 50% when the other calls sit on the male side.
+    pool = medianMale(reads) >= 0.5 ? males : females;
+  }
+  if (!pool.length) pool = reads;
+  const ranked = [...pool].sort((left, right) => sexShares(left).male - sexShares(right).male);
+  return ranked[Math.floor(ranked.length / 2)] ?? reads[0];
+}
+
+function medianMale(reads: RawGroups[]) {
+  const shares = reads.map((item) => sexShares(item).male).sort((left, right) => left - right);
+  const mid = Math.floor(shares.length / 2);
+  if (shares.length % 2 === 1) return shares[mid] ?? 0;
+  return ((shares[mid - 1] ?? 0) + (shares[mid] ?? 0)) / 2;
 }
 
 async function readOnce(image: string): Promise<RawGroups> {
