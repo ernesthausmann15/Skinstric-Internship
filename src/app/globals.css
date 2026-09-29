@@ -171,8 +171,55 @@ body {
   top: auto !important;
   bottom: max(12px, env(safe-area-inset-bottom)) !important;
   z-index: 50;
+  width: auto !important;
+  max-width: calc(50vw - 16px);
   min-width: 44px;
   min-height: 44px;
+}
+
+.sk-compact .sk-nav-label {
+  width: auto !important;
+  max-width: calc(50vw - 72px);
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  line-height: 1.1;
+}
+
+/* The brand row is the same on every screen. In the page flow it
+   reserves its own height, so titles and fields start below it. */
+.sk-compact section > header {
+  position: sticky !important;
+  top: 0;
+  left: 0 !important;
+  z-index: 45;
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 56px;
+  margin: 0;
+  padding: max(8px, env(safe-area-inset-top)) 12px 8px max(12px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  background: #fcfcfc;
+}
+
+.sk-compact section > header > p,
+.sk-compact section > header > button {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+.sk-compact section > header > button {
+  margin-left: auto !important;
+  min-height: 44px;
+  padding-inline: 12px;
 }
 
 /* The spinning diamonds are decoration. Their boxes cover the lower
@@ -357,6 +404,12 @@ body {
   object-position: center center;
 }
 
+.sk-compact .scan-frame > header {
+  position: absolute !important;
+  background: transparent;
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
 .sk-compact .scan-frame header,
 .sk-compact .scan-frame > p[class*="left-[32px]"] {
   z-index: 6;
@@ -513,76 +566,67 @@ body {
   min-height: min(340px, 78vw);
 }
 
-/* The analysis cluster is measured from the outer 764 ring. Percentages
-   keep Demographics, Skin Type, Cosmetic Concerns, and Weather in the
-   same diamond arrangement once that ring fits the viewport. */
+/* The four labels share one square measured from the facet cluster,
+   not the 764 ring. Each diamond is about half that square, so
+   "Demographics" stays inside the shape at a readable size. */
+.sk-compact [aria-label="A.I. analysis"] {
+  display: flex;
+  flex-direction: column;
+}
+
 .sk-compact .analysis-stage {
   display: block;
-  position: absolute;
-  left: 50%;
-  top: 48%;
-  width: min(92vw, 62dvh, 640px);
-  height: min(92vw, 62dvh, 640px);
-  transform: translate(-50%, -50%);
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  width: min(92vw, 440px);
+  height: min(92vw, 440px);
+  margin: 8px auto 0;
+  transform: none;
+  flex: 0 0 auto;
 }
 
 .sk-compact .analysis-stage .sk-spin {
-  position: absolute !important;
-}
-
-.sk-compact .analysis-stage .sk-spin-outer {
-  left: 0 !important;
-  top: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.sk-compact .analysis-stage .sk-spin-middle {
-  left: 5.2% !important;
-  top: 5.2% !important;
-  width: 89.5% !important;
-  height: 89.5% !important;
-}
-
-.sk-compact .analysis-stage .sk-spin-inner {
-  left: 10.5% !important;
-  top: 10.5% !important;
-  width: 79.1% !important;
-  height: 79.1% !important;
-}
-
-.sk-compact .analysis-stage img {
-  width: 100% !important;
-  height: 100% !important;
+  display: none !important;
 }
 
 .sk-compact .analysis-stage .analysis-facet {
   position: absolute !important;
   margin: 0 !important;
-  width: 28.4% !important;
-  height: 28.4% !important;
+  width: 49% !important;
+  height: 49% !important;
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%) !important;
   z-index: 5;
+  font-size: clamp(12px, 3.2vw, 14px) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+  padding: 0 !important;
+}
+
+.sk-compact .analysis-stage .analysis-facet .facet-label {
+  display: block;
+  max-width: 78%;
+  text-align: center;
 }
 
 .sk-compact .analysis-facet-demographics {
-  left: 35.8% !important;
-  top: 20.9% !important;
+  left: 25.5% !important;
+  top: 0 !important;
 }
 
 .sk-compact .analysis-facet-skin {
-  left: 21% !important;
-  top: 35.8% !important;
+  left: 0 !important;
+  top: 25.5% !important;
 }
 
 .sk-compact .analysis-facet-cosmetic {
-  left: 50.5% !important;
-  top: 35.8% !important;
+  left: 51% !important;
+  top: 25.5% !important;
 }
 
 .sk-compact .analysis-facet-weather {
-  left: 35.8% !important;
-  top: 50.5% !important;
+  left: 25.5% !important;
+  top: 51% !important;
 }
 
 .sk-compact .analysis-copy {
@@ -710,4 +754,102 @@ body {
 
 .sk-compact [aria-label="Demographics"] ul button {
   min-height: 48px;
+}
+
+/* Demographics is a column. The title, the three cards, the chosen
+   name, the ring, and the score list each take their own band. */
+.sk-compact [aria-label="Demographics"] .demo-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+  padding: 8px 16px 0;
+  box-sizing: border-box;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-head > p,
+.sk-compact [aria-label="Demographics"] .demo-head > h1 {
+  position: relative !important;
+  top: auto !important;
+  left: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-head > h1 {
+  width: calc(100% - 104px) !important;
+  margin-top: 4px !important;
+  font-size: clamp(28px, 8vw, 44px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-head .sk-nav {
+  position: absolute !important;
+  top: 28px !important;
+  bottom: auto !important;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 16px 0;
+  box-sizing: border-box;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-cards > button {
+  position: relative !important;
+  top: auto !important;
+  left: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 0 !important;
+  min-height: 72px;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px 0;
+  box-sizing: border-box;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-main,
+.sk-compact [aria-label="Demographics"] .demo-list {
+  position: relative !important;
+  top: auto !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-main > p {
+  position: relative !important;
+  top: auto !important;
+  left: 16px !important;
+  width: calc(100% - 32px) !important;
+  margin: 16px 0 0 !important;
+  font-size: clamp(22px, 6vw, 32px) !important;
+  line-height: 1.2 !important;
+  overflow-wrap: anywhere;
+}
+
+.sk-compact [aria-label="Demographics"] .demo-ring {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: min(240px, 64vw) !important;
+  height: min(240px, 64vw) !important;
+  margin: 8px auto 16px !important;
+  transform: none !important;
+  --tw-translate-x: 0px !important;
 }

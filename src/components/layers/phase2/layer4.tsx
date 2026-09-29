@@ -79,6 +79,10 @@ export function Layer4({
         </p>
       </header>
 
+      {/* `contents` leaves these on the 1920 artboard. On a phone the
+          group becomes a normal column so the title, cards, and ring
+          each start after the one above. */}
+      <div className="demo-head contents">
       <p className="absolute top-[86px] left-[32px] text-[16px] leading-[24px] font-semibold tracking-[-0.32px] uppercase">
         A. I. Analysis
       </p>
@@ -108,7 +112,9 @@ export function Layer4({
       <p className="absolute top-[196px] left-[32px] text-[12px] leading-[16px] font-semibold tracking-[0.6px] uppercase">
         Predicted race &amp; age
       </p>
+      </div>
 
+      <div className="demo-cards contents">
       {CARDS.map((card) => {
         const item = groups.find((groupItem) => groupItem.id === card.id) ?? groups[0];
         const active = item.id === group.id;
@@ -135,15 +141,17 @@ export function Layer4({
           </button>
         );
       })}
+      </div>
 
-      <div className="absolute top-[306px] left-[255px] h-[540px] w-[1170px] bg-[#F3F3F3]">
+      <div className="demo-stack contents">
+      <div className="demo-main absolute top-[306px] left-[255px] h-[540px] w-[1170px] bg-[#F3F3F3]">
         <p className="absolute top-[26px] left-[19px] text-[32px] leading-[40px] font-normal">
           {title}
         </p>
         <ConfidenceCircle value={selected.value} />
       </div>
 
-      <div className="absolute top-[306px] left-[1440px] h-[540px] w-[448px] bg-[#F3F3F3]">
+      <div className="demo-list absolute top-[306px] left-[1440px] h-[540px] w-[448px] bg-[#F3F3F3]">
         <div className="flex h-[45px] items-center justify-between px-[16px] text-[10px] leading-[16px] font-semibold tracking-[0.8px] uppercase">
           <span>{group.label}</span>
           <span>A. I. Confidence</span>
@@ -176,6 +184,7 @@ export function Layer4({
             );
           })}
         </ul>
+      </div>
       </div>
 
       <button
