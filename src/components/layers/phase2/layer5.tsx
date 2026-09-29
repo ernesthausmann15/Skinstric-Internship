@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ConfidenceScore } from "@/lib/analyze-portrait";
+import { formatScore, type ConfidenceScore } from "@/lib/analyze-portrait";
 import { ConfidenceCircle } from "@/components/layers/phase2/confidence-circle";
 
 /**
@@ -138,7 +138,7 @@ export function Layer5({
                 >
                   <DiamondMark filled={active} />
                   <span className="flex-1">{option.name}</span>
-                  <span>{option.value} %</span>
+                  <span>{formatScore(option.value)} %</span>
                 </button>
               </li>
             );

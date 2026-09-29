@@ -13,6 +13,7 @@ import { Layer2 as CameraSetup } from "@/components/layers/phase3/layer2";
 import { Layer3 as CameraPreview } from "@/components/layers/phase3/layer3";
 import { Layer4 as CameraShot } from "@/components/layers/phase3/layer4";
 import { analyzePortrait, readImageFile, type PortraitAnalysis } from "@/lib/analyze-portrait";
+import { isPersonText, readCustomer, submitCustomer } from "@/lib/customer";
 import { isolateFace, prepareFrame, type FaceContour, type PreparedFrame } from "@/lib/focus-face";
 
 type Step =
@@ -45,7 +46,10 @@ type Step =
  */
 export function AnalysisFlow() {
   const [step, setStep] = useState<Step>("landing");
+  const [name, setName] = useState("");
   const [place, setPlace] = useState("");
+  const [introducing, setIntroducing] = useState(false);
+  const [introError, setIntroError] = useState("");
   const [granted, setGranted] = useState(false);
   const [reading, setReading] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -59,6 +63,13 @@ export function AnalysisFlow() {
   // Each new picture bumps this. A reply from an older picture is ignored,
   // so the sample portrait cannot paint over the photo just chosen.
   const readId = useRef(0);
+
+  useEffect(() => {
+    const saved = readCustomer();
+    if (!saved) return;
+    setName(saved.name);
+    setPlace(saved.location);
+  }, []);
 
   useEffect(() => {
     if (step !== "setup") return;
@@ -75,7 +86,12 @@ export function AnalysisFlow() {
 
   async function openCamera() {
     const next = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "user", width: 1280, height: 720 },
+      audio: false,
+      video: {
+        facingMode: { ideal: "user" },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+      },
     });
     setStream(next);
     return next;
@@ -88,6 +104,20 @@ export function AnalysisFlow() {
       setStep("setup");
     } catch {
       setGranted(false);
+    }
+  }
+
+  async function proceedFromIntro() {
+    if (introducing || !isPersonText(name) || !isPersonText(place)) return;
+    setIntroducing(true);
+    setIntroError("");
+    try {
+      await submitCustomer({ name, location: place });
+      setStep("choose");
+    } catch (error) {
+      setIntroError(error instanceof Error ? error.message : "The introduction could not be saved.");
+    } finally {
+      setIntroducing(false);
     }
   }
 
@@ -138,24 +168,37 @@ export function AnalysisFlow() {
       {step === "landing" ? <Landing onTakeTest={() => setStep("name")} /> : null}
       {step === "name" ? (
         <Layer3
+          value={name}
+          onChange={setName}
           onBack={() => setStep("landing")}
-          onSubmit={() => setStep("place")}
+          onSubmit={() => {
+            if (isPersonText(name)) setStep("place");
+          }}
         />
       ) : null}
       {step === "place" ? (
         <Layer4
+          value={place}
+          onChange={setPlace}
           onBack={() => setStep("name")}
-          onSubmit={(value) => {
-            setPlace(value);
-            setStep("confirm");
+          onSubmit={() => {
+            if (isPersonText(place)) setStep("confirm");
           }}
         />
       ) : null}
       {step === "confirm" ? (
         <Layer5
-          city={place || "Melbourne"}
-          onBack={() => setStep("place")}
-          onProceed={() => setStep("choose")}
+          city={place}
+          pending={introducing}
+          error={introError}
+          onBack={() => {
+            if (introducing) return;
+            setIntroError("");
+            setStep("place");
+          }}
+          onProceed={() => {
+            void proceedFromIntro();
+          }}
         />
       ) : null}
       {!reading && step === "choose" ? (
@@ -260,16 +303,27 @@ function StageFrame({ children }: { children: ReactNode }) {
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    // The artboard is a fixed 1920×960 frame. Scaling it to the window keeps
-    // the lowered face inside the visible application instead of past the edge.
-    const fit = () => setScale(Math.min(window.innerWidth / 1920, window.innerHeight / 960));
+    // The artboard stays 1920×960. Phone and tablet windows scale that same
+    // frame to the visual viewport, so the camera and the forms stay on
+    // screen when the browser chrome or the orientation changes.
+    const fit = () => {
+      const width = window.visualViewport?.width ?? window.innerWidth;
+      const height = window.visualViewport?.height ?? window.innerHeight;
+      setScale(Math.min(width / 1920, height / 960));
+    };
     fit();
     window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    window.addEventListener("orientationchange", fit);
+    window.visualViewport?.addEventListener("resize", fit);
+    return () => {
+      window.removeEventListener("resize", fit);
+      window.removeEventListener("orientationchange", fit);
+      window.visualViewport?.removeEventListener("resize", fit);
+    };
   }, []);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#FCFCFC]">
+    <div className="relative h-dvh w-dvw overflow-hidden bg-[#FCFCFC]" style={{ touchAction: "manipulation" }}>
       <div
         className="absolute top-1/2 left-1/2"
         style={{ width: 1920, height: 960, transform: `translate(-50%, -50%) scale(${scale})` }}

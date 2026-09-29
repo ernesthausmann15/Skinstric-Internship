@@ -12,11 +12,15 @@ import Image from "next/image";
 const INK = "#1A1B1C";
 
 export function Layer5({
-  city = "Melbourne",
+  city,
+  pending = false,
+  error = "",
   onBack,
   onProceed,
 }: {
-  city?: string;
+  city: string;
+  pending?: boolean;
+  error?: string;
   onBack?: () => void;
   onProceed?: () => void;
 }) {
@@ -67,6 +71,11 @@ export function Layer5({
         <h1 className="text-[60px] leading-[64px] font-normal tracking-[-4.2px]">{city}</h1>
         <div className="h-px bg-[#1A1B1C]" />
       </div>
+      {error ? (
+        <p className="absolute top-[528px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[0.4px] uppercase opacity-50">
+          {error}
+        </p>
+      ) : null}
 
       <button
         type="button"
@@ -82,7 +91,8 @@ export function Layer5({
       <button
         type="button"
         onClick={onProceed}
-        className="sk-nav absolute top-[880px] left-[1765px] flex h-[44px] w-[123px] items-center justify-end gap-[16px] border-0 bg-transparent p-0 font-[inherit] text-inherit"
+        disabled={pending}
+        className="sk-nav absolute top-[880px] left-[1765px] flex h-[44px] w-[123px] items-center justify-end gap-[16px] border-0 bg-transparent p-0 font-[inherit] text-inherit disabled:cursor-default disabled:opacity-30"
       >
         <span className="sk-nav-label w-[63px] text-right text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase opacity-70 transition-opacity duration-300">
           proceed

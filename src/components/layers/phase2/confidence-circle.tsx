@@ -46,7 +46,7 @@ export function ConfidenceCircle({ value }: { value: number | null }) {
         />
       </svg>
       <span className="absolute inset-0 flex items-center justify-center text-[32px] leading-[40px] font-normal">
-        {value === null ? "" : `${value}%`}
+        {value === null ? "" : `${value.toFixed(2)}%`}
       </span>
     </div>
   );

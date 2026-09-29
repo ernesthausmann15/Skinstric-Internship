@@ -2,8 +2,8 @@
  * The portrait is the only input to the reader. A gallery file or a camera
  * frame is posted as base64, and the reply is turned into the three confidence
  * lists the demographics screens already know how to draw.
- * Scores arrive as fractions between 0 and 1. They are stored as whole
- * percentages so the ring and the list share one number.
+ * Scores arrive as fractions between 0 and 1. They are stored as percentages
+ * and drawn to two decimal places. The lists stay sorted from highest to lowest.
  * The service classifies the pixels it receives. A PNG crop is forwarded as
  * those bytes. RGB stays in canvas order, with no equalize, invert, or
  * brightness lift, and no JPEG pass on the way out.
@@ -78,11 +78,16 @@ function toScores(group: ScoreMap): ConfidenceScore[] {
   return Object.entries(group)
     .map(([key, raw]) => {
       const numeric = typeof raw === "number" ? raw : Number(raw);
-      const value = Number.isFinite(numeric) ? (numeric <= 1 ? Math.round(numeric * 100) : Math.round(numeric)) : 0;
+      const value = Number.isFinite(numeric) ? (numeric <= 1 ? numeric * 100 : numeric) : 0;
       const display = key.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
       return { name: display, display, value };
     })
     .sort((left, right) => right.value - left.value);
+}
+
+/** The list, the ring, and the sidebar share this two-decimal percentage. */
+export function formatScore(value: number) {
+  return value.toFixed(2);
 }
 
 function readerPayload(dataUrl: string): Promise<string> {
