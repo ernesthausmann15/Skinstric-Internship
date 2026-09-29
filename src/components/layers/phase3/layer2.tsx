@@ -42,52 +42,57 @@ const TIPS = [
 export function Layer2({ status = "Setting up camera ..." }: { status?: string }) {
   return (
     <section
-      className="phase3-setup relative h-[960px] w-[1920px] overflow-hidden bg-[#FCFCFC] text-[#1A1B1C]"
+      className="phase3-setup scan-frame relative h-[960px] w-[1920px] overflow-hidden bg-[#FCFCFC] text-[#1A1B1C]"
       aria-label="Setting up camera"
     >
-      {DIAMONDS.map((diamond) => (
-        <span
-          key={diamond.src}
-          className="pointer-events-none absolute block"
-          style={{
-            left: diamond.left,
-            top: diamond.top,
-            width: diamond.size,
-            height: diamond.size,
-            transform: `rotate(${diamond.angle}deg)`,
-          }}
-        >
-          {/* The inner span spins. The outer span only holds the frame's starting angle. */}
-          <span className={`sk-spin ${diamond.speed} ${diamond.opacity} block h-full w-full`}>
-            <Image
-              src={diamond.src}
-              alt=""
-              width={diamond.size}
-              height={diamond.size}
-              unoptimized
-            />
+      {/* `contents` leaves the diamonds on the 1920 artboard. The compact
+          frame turns this box into a square centered in the viewport, so the
+          rings and shutter stay on screen when the artboard is wider than the phone. */}
+      <div className="scan-rings contents">
+        {DIAMONDS.map((diamond, index) => (
+          <span
+            key={diamond.src}
+            className={`scan-ring pointer-events-none absolute block ${index === 0 ? "scan-ring-outer" : "scan-ring-inner"}`}
+            style={{
+              left: diamond.left,
+              top: diamond.top,
+              width: diamond.size,
+              height: diamond.size,
+              transform: `rotate(${diamond.angle}deg)`,
+            }}
+          >
+            {/* The inner span spins. The outer span only holds the frame's starting angle. */}
+            <span className={`sk-spin ${diamond.speed} ${diamond.opacity} block h-full w-full`}>
+              <Image
+                src={diamond.src}
+                alt=""
+                width={diamond.size}
+                height={diamond.size}
+                unoptimized
+              />
+            </span>
           </span>
-        </span>
-      ))}
+        ))}
 
-      <Image
-        className="phase2-dash absolute top-[412px] left-[892px]"
-        src="/layers/phase2/dash-ring.svg"
-        alt=""
-        width={136}
-        height={136}
-        unoptimized
-      />
-      <Image
-        className="absolute top-[421.5px] left-[901.5px]"
-        src="/layers/phase2/12-15768.svg"
-        alt=""
-        width={117}
-        height={117}
-        unoptimized
-      />
+        <Image
+          className="scan-shutter phase2-dash absolute top-[412px] left-[892px]"
+          src="/layers/phase2/dash-ring.svg"
+          alt=""
+          width={136}
+          height={136}
+          unoptimized
+        />
+        <Image
+          className="scan-shutter absolute top-[421.5px] left-[901.5px]"
+          src="/layers/phase2/12-15768.svg"
+          alt=""
+          width={117}
+          height={117}
+          unoptimized
+        />
+      </div>
 
-      <p className="absolute top-[570px] left-1/2 w-max -translate-x-1/2 text-[14px] leading-[16px] font-semibold tracking-[0.4px] uppercase">
+      <p className="scan-status absolute top-[570px] left-1/2 w-max -translate-x-1/2 text-[14px] leading-[16px] font-semibold tracking-[0.4px] uppercase">
         {status}
       </p>
 

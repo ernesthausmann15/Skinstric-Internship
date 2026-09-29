@@ -116,7 +116,7 @@ export function Layer3({
 
   return (
     <section
-      className="relative h-[960px] w-[1920px] overflow-hidden bg-[#CDCDCB] text-[#FCFCFC]"
+      className="scan-frame relative h-[960px] w-[1920px] overflow-hidden bg-[#CDCDCB] text-[#FCFCFC]"
       aria-label="Camera preview"
     >
       <video
@@ -128,7 +128,7 @@ export function Layer3({
       />
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute top-0 left-0 h-[960px] w-[1920px]"
+        className="scan-canvas pointer-events-none absolute top-0 left-0 h-[960px] w-[1920px]"
       />
 
       <p className="absolute top-[23px] left-[32px] text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase">
@@ -147,9 +147,9 @@ export function Layer3({
       <button
         type="button"
         onClick={takePicture}
-        className="absolute top-[450px] right-[34px] flex items-center gap-[16px] border-0 bg-transparent p-0 text-[#FCFCFC]"
+        className="scan-capture absolute top-[450px] right-[34px] flex items-center gap-[16px] border-0 bg-transparent p-0 text-[#FCFCFC]"
       >
-        <span className="text-[12px] leading-[16px] font-semibold tracking-[0.8px] uppercase">
+        <span className="scan-capture-label text-[12px] leading-[16px] font-semibold tracking-[0.8px] uppercase">
           Take picture
         </span>
         <span className="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-[#FCFCFC]">
