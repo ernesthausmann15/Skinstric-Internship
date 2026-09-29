@@ -54,6 +54,7 @@ export function AnalysisFlow() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [frame, setFrame] = useState<PreparedFrame | null>(null);
   const [face, setFace] = useState<FaceContour | null>(null);
+  const [shotOpen, setShotOpen] = useState(false);
   const [shotFrom, setShotFrom] = useState<"camera" | "gallery" | null>(null);
   const [analysis, setAnalysis] = useState<PortraitAnalysis | null>(null);
   const [scanId, setScanId] = useState(0);
@@ -139,6 +140,7 @@ export function AnalysisFlow() {
     setReading(false);
     setAnalysis(null);
     setFace(null);
+    setShotOpen(false);
     setFrame(next);
     setShotFrom(from);
     setStep("shot");
@@ -249,8 +251,9 @@ export function AnalysisFlow() {
       {step === "shot" ? (
         <CameraShot
           image={frame?.image ?? null}
-          ready={Boolean(face)}
+          ready={shotOpen}
           scanning={reading}
+          onOpen={() => setShotOpen(true)}
           onScanReady={(region) => setFace(region)}
           onBack={() => {
             if (reading) return;
@@ -268,7 +271,16 @@ export function AnalysisFlow() {
               });
           }}
           onProceed={() => {
-            if (face && frame && !reading) scanFace(face, frame);
+            if (!frame || reading || !shotOpen) return;
+            // A locked contour is cropped and sent. Without one, the uploaded
+            // picture itself continues, so Proceed is not stuck.
+            if (face) {
+              scanFace(face, frame);
+              return;
+            }
+            if (scanGuard.current) return;
+            scanGuard.current = true;
+            void submitPortrait(frame.source);
           }}
         />
       ) : null}

@@ -11,14 +11,18 @@ import { paintBlurredFrame, scanFaceLive, type FaceContour } from "@/lib/focus-f
  */
 export function LiveFaceBlur({
   image,
+  onOpen,
   onReady,
 }: {
   image: string;
+  onOpen?: () => void;
   onReady: (face: FaceContour | null) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const onReadyRef = useRef(onReady);
+  const onOpenRef = useRef(onOpen);
   onReadyRef.current = onReady;
+  onOpenRef.current = onOpen;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,6 +36,9 @@ export function LiveFaceBlur({
       canvas.width = picture.naturalWidth;
       canvas.height = picture.naturalHeight;
       paintBlurredFrame(canvas, picture, picture.naturalWidth, picture.naturalHeight, null, 0);
+      // The photo is on screen. Proceed can be used now, even if the face
+      // walk later finds no contour.
+      onOpenRef.current?.();
       openFrame = window.requestAnimationFrame(() => {
         if (cancelled) return;
         const scan = scanFaceLive(picture, picture.naturalWidth, picture.naturalHeight, (progress, face) => {
