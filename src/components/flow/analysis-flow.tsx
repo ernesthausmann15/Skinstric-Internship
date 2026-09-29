@@ -110,14 +110,26 @@ export function AnalysisFlow() {
   }
 
   async function proceedFromIntro() {
-    if (introducing || !isPersonText(name) || !isPersonText(place)) return;
+    if (introducing) return;
+    // A failed check stays on this screen and says why. A valid pair is
+    // stored, posted, and only then does the parent step move to the
+    // camera and gallery choice.
+    if (!isPersonText(name) || !isPersonText(place)) {
+      const message = "Enter a name and a location using letters only.";
+      setIntroError(message);
+      setNotice(message);
+      return;
+    }
     setIntroducing(true);
     setIntroError("");
+    setNotice("");
     try {
       await submitCustomer({ name, location: place });
       setStep("choose");
     } catch (error) {
-      setIntroError(error instanceof Error ? error.message : "The introduction could not be saved.");
+      const message = error instanceof Error ? error.message : "The introduction could not be saved.";
+      setIntroError(message);
+      setNotice(message);
     } finally {
       setIntroducing(false);
     }
@@ -227,6 +239,7 @@ export function AnalysisFlow() {
           }}
           onDeny={() => {
             stopCamera();
+            setNotice("Camera access was blocked. Allow the camera in the browser, or use the gallery.");
             setStep("choose");
           }}
           onAllow={allowCamera}
