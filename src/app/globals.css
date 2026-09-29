@@ -133,9 +133,9 @@ body {
   max-width: 100%;
   height: auto !important;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
-  padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  padding-bottom: calc(128px + env(safe-area-inset-bottom));
 }
 
 .sk-compact [class*="w-[1920px]"] {
@@ -165,13 +165,20 @@ body {
 }
 
 .sk-compact .sk-nav,
-.sk-compact .phase2-back {
+.sk-compact .phase2-back,
+.sk-compact .flow-proceed {
   position: fixed !important;
   top: auto !important;
   bottom: max(12px, env(safe-area-inset-bottom)) !important;
-  z-index: 40;
+  z-index: 50;
   min-width: 44px;
   min-height: 44px;
+}
+
+/* The spinning diamonds are decoration. Their boxes cover the lower
+   right of a tablet, and a click there used to miss Proceed. */
+.sk-compact .sk-spin {
+  pointer-events: none !important;
 }
 
 .sk-compact .sk-nav[class*="left-"],
@@ -215,15 +222,54 @@ body {
   text-align: center;
 }
 
-.sk-compact section > p[class*="left-1/2"]:not(.scan-title):not(.scan-status) {
+.sk-compact section > p[class*="left-1/2"]:not(.scan-title):not(.scan-status),
+.sk-compact .screen-note {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  width: min(calc(100% - 32px), 36rem) !important;
+  max-width: 100%;
+  margin: 12px auto 0 !important;
+  transform: none !important;
+  --tw-translate-x: 0px !important;
+  --tw-translate-y: 0px !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.sk-compact section > p.intro-prompt {
   position: relative !important;
   top: auto !important;
   left: auto !important;
-  width: 100% !important;
-  margin: 12px auto 0;
+  width: min(calc(100% - 32px), 28rem) !important;
+  margin: 10vh auto 0 !important;
   transform: none !important;
-  translate: none !important;
+  --tw-translate-x: 0px !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
   text-align: center;
+}
+
+.sk-compact .intro-city {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: min(calc(100% - 32px), 28rem) !important;
+  margin: 12vh auto 0 !important;
+  transform: none !important;
+  --tw-translate-x: 0px !important;
+  --tw-translate-y: 0px !important;
+  text-align: center;
+}
+
+.sk-compact .intro-city h1 {
+  margin: 0 !important;
+  width: 100% !important;
+  overflow-wrap: anywhere;
+  font-size: clamp(36px, 10vw, 60px) !important;
+  line-height: 1.05 !important;
 }
 
 .sk-compact .phase2-choice {
@@ -269,9 +315,11 @@ body {
 }
 
 .sk-compact [role="dialog"] {
+  position: fixed !important;
   left: 50% !important;
   top: auto !important;
   bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+  z-index: 55;
   width: min(352px, calc(100vw - 32px)) !important;
   height: auto !important;
   transform: translateX(-50%);
@@ -295,6 +343,7 @@ body {
   min-height: 100dvh;
   max-height: 100dvh;
   padding: 0 !important;
+  overflow: hidden !important;
 }
 
 /* The bitmap stays 1920×960 for detection. object-fit covers the phone
@@ -537,8 +586,14 @@ body {
 }
 
 .sk-compact .analysis-copy {
+  position: relative !important;
+  top: auto !important;
+  left: 16px !important;
   z-index: 6;
+  width: calc(100% - 32px) !important;
   max-width: calc(100% - 32px);
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .sk-compact .camera-tips {
@@ -552,7 +607,11 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px 14px;
+  width: calc(100% - 32px);
   max-width: calc(100% - 32px);
+  max-height: 28dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .sk-compact [aria-label="Camera preview"] .camera-tips,
@@ -560,21 +619,40 @@ body {
   bottom: calc(96px + env(safe-area-inset-bottom));
 }
 
-@media (max-height: 520px) {
-  .sk-compact .camera-tips,
-  .sk-compact .analysis-copy,
-  .sk-compact .scan-status {
-    display: none;
-  }
-}
-
 .sk-compact .camera-tips p {
   position: static !important;
   top: auto !important;
   left: auto !important;
   width: auto !important;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
   transform: none !important;
+  --tw-translate-x: 0px !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.sk-compact [aria-label="Demographics"] [class*="top-[306px]"] {
+  max-width: 100%;
+  overflow: visible;
+}
+
+.sk-compact [aria-label="Demographics"] [class*="top-[306px]"] > p {
+  position: relative !important;
+  top: auto !important;
+  left: 16px !important;
+  width: calc(100% - 32px) !important;
+  margin: 16px 0 8px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.sk-compact [aria-label="Demographics"] ul {
+  max-height: min(52dvh, 420px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .sk-compact header button {
@@ -585,12 +663,37 @@ body {
   display: none;
 }
 
+/* A touch on the landing artboard used to count as a side hover.
+   That hides the resting Take test button and reveals a control that
+   sits off the phone, so the test cannot start. */
+.sk-compact [aria-label="Skinstric introduction"] [data-side] {
+  display: none !important;
+}
+
+.sk-compact [aria-label="Skinstric introduction"] .sk-nav {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
 .sk-compact [aria-label="Skinstric introduction"] > p {
   position: relative !important;
   top: auto !important;
   left: 16px !important;
   width: calc(100% - 32px) !important;
   margin-top: 24px;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+.sk-compact .phase2-choice > p {
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+}
+
+.sk-compact [aria-label="Demographics"] button[style] span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .sk-compact [aria-label="Demographics"] [class*="h-[383px]"] {

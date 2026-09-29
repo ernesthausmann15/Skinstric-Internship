@@ -162,15 +162,15 @@ export function Layer4({
                     // changes on this click.
                     setPicked((current) => ({ ...current, [group.id]: index }));
                   }}
-                  className={`flex h-[49px] w-full cursor-pointer items-center gap-[12px] border-0 px-[16px] text-left text-[14px] leading-[16px] font-semibold tracking-[-0.28px] transition-colors duration-300 ${
+                  className={`flex h-auto min-h-[48px] w-full cursor-pointer items-center gap-[12px] border-0 px-[16px] py-[12px] text-left text-[14px] leading-[16px] font-semibold tracking-[-0.28px] whitespace-normal transition-colors duration-300 ${
                     active
                       ? "bg-[#1A1B1C] text-[#FCFCFC]"
                       : "bg-transparent text-[#1A1B1C] hover:bg-[#E1E1E1]"
                   }`}
                 >
                   <DiamondMark filled={active} />
-                  <span className="flex-1">{option.name}</span>
-                  <span>{formatScore(option.value)} %</span>
+                  <span className="min-w-0 flex-1 break-words">{option.name}</span>
+                  <span className="shrink-0">{formatScore(option.value)} %</span>
                 </button>
               </li>
             );
@@ -189,7 +189,7 @@ export function Layer4({
         </span>
       </button>
 
-      <p className="absolute top-[896px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-normal tracking-[0.4px] text-[#1A1B1C]/50 uppercase">
+      <p className="screen-note absolute top-[896px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-normal tracking-[0.4px] text-[#1A1B1C]/50 uppercase">
         If A.I. estimate is wrong, select the correct one.
       </p>
 

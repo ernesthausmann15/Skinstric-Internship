@@ -83,7 +83,7 @@ export function Layer3({
       />
       <div className="absolute top-[512px] left-[751px] h-px w-[417px] bg-[#1A1B1C]" />
       {invalid ? (
-        <p className="absolute top-[528px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[0.4px] uppercase opacity-50">
+        <p className="screen-note absolute top-[528px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[0.4px] uppercase opacity-50">
           Letters only
         </p>
       ) : null}
@@ -129,7 +129,7 @@ function DiamondOutline({
 }) {
   return (
     <span
-      className={`sk-spin absolute block ${className}`}
+      className={`sk-spin pointer-events-none absolute block ${className}`}
       style={{ width, height }}
     >
       <Image src={src} alt="" width={width} height={height} unoptimized />

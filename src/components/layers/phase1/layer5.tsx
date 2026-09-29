@@ -63,16 +63,18 @@ export function Layer5({
         To start analysis
       </p>
 
-      <p className="absolute top-[422px] left-[881px] w-[157px] text-[14px] leading-[24px] font-normal tracking-[0px] uppercase opacity-40">
+      <p className="intro-prompt absolute top-[422px] left-[881px] w-[157px] text-[14px] leading-[24px] font-normal tracking-[0px] uppercase opacity-40">
         Where are you from?
       </p>
 
-      <div className="absolute top-[448px] left-1/2 w-max -translate-x-1/2 text-center">
+      {/* The city stays with the question on a phone. The shared heading
+          rule would otherwise push it down the artboard and under the nav. */}
+      <div className="intro-city absolute top-[448px] left-1/2 w-max -translate-x-1/2 text-center">
         <h1 className="text-[60px] leading-[64px] font-normal tracking-[-4.2px]">{city}</h1>
         <div className="h-px bg-[#1A1B1C]" />
       </div>
       {error ? (
-        <p className="absolute top-[528px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[0.4px] uppercase opacity-50">
+        <p className="screen-note absolute top-[528px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[0.4px] uppercase opacity-50">
           {error}
         </p>
       ) : null}
@@ -92,7 +94,7 @@ export function Layer5({
         type="button"
         onClick={onProceed}
         disabled={pending}
-        className="sk-nav absolute top-[880px] left-[1765px] flex h-[44px] w-[123px] items-center justify-end gap-[16px] border-0 bg-transparent p-0 font-[inherit] text-inherit disabled:cursor-default disabled:opacity-30"
+        className="sk-nav flow-proceed absolute top-[880px] left-[1765px] flex h-[44px] w-[123px] items-center justify-end gap-[16px] border-0 bg-transparent p-0 font-[inherit] text-inherit disabled:cursor-default disabled:opacity-30"
       >
         <span className="sk-nav-label w-[63px] text-right text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase opacity-70 transition-opacity duration-300">
           proceed
@@ -116,7 +118,7 @@ function DiamondOutline({
 }) {
   return (
     <span
-      className={`sk-spin absolute block ${className}`}
+      className={`sk-spin pointer-events-none absolute block ${className}`}
       style={{ width, height }}
     >
       <Image src={src} alt="" width={width} height={height} unoptimized />
