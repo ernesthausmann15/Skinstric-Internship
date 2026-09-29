@@ -32,7 +32,7 @@ export function Layer4({
   const canProceed = ready && !scanning;
   return (
     <section
-      className="relative h-[960px] w-[1920px] overflow-hidden bg-[#CDCDCB] text-[#FCFCFC]"
+      className="scan-frame relative h-[960px] w-[1920px] overflow-hidden bg-[#CDCDCB] text-[#FCFCFC]"
       aria-label="Great shot"
     >
       {image ? <LiveFaceBlur image={image} onReady={(region) => onScanReady?.(region)} /> : null}
@@ -48,7 +48,7 @@ export function Layer4({
         </p>
       </header>
 
-      <p className="absolute top-[262px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[1.2px] uppercase">
+      <p className="scan-title absolute top-[262px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[1.2px] uppercase">
         {scanning ? "Scanning face..." : "Great shot!"}
       </p>
 

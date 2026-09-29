@@ -215,13 +215,14 @@ body {
   text-align: center;
 }
 
-.sk-compact section > p[class*="left-1/2"] {
+.sk-compact section > p[class*="left-1/2"]:not(.scan-title):not(.scan-status) {
   position: relative !important;
   top: auto !important;
   left: auto !important;
   width: 100% !important;
   margin: 12px auto 0;
   transform: none !important;
+  translate: none !important;
   text-align: center;
 }
 
@@ -272,7 +273,13 @@ body {
   top: auto !important;
   bottom: calc(88px + env(safe-area-inset-bottom)) !important;
   width: min(352px, calc(100vw - 32px)) !important;
+  height: auto !important;
   transform: translateX(-50%);
+}
+
+.sk-compact [role="dialog"] > div:last-child {
+  height: auto !important;
+  min-height: 48px;
 }
 
 .sk-compact [role="dialog"] button {
@@ -282,26 +289,117 @@ body {
 }
 
 .sk-compact [aria-label="Camera preview"],
-.sk-compact [aria-label="Great shot"] {
+.sk-compact [aria-label="Great shot"],
+.sk-compact [aria-label="Setting up camera"] {
   height: 100dvh !important;
   min-height: 100dvh;
-  padding: 0;
+  max-height: 100dvh;
+  padding: 0 !important;
 }
 
-.sk-compact [aria-label="Camera preview"] canvas,
-.sk-compact [aria-label="Great shot"] canvas {
+/* The bitmap stays 1920×960 for detection. object-fit covers the phone
+   without stretching the face into the tall viewport. */
+.sk-compact .scan-canvas {
+  top: 0 !important;
+  left: 0 !important;
   width: 100% !important;
-  height: 100dvh !important;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center center;
 }
 
-.sk-compact [aria-label="Camera preview"] button:not(.sk-nav) {
+.sk-compact .scan-frame header,
+.sk-compact .scan-frame > p[class*="left-[32px]"] {
+  z-index: 6;
+}
+
+.sk-compact .scan-frame > p.scan-title {
+  position: absolute !important;
+  top: max(76px, 12dvh) !important;
+  right: 0 !important;
+  left: 0 !important;
+  width: max-content !important;
+  max-width: calc(100% - 32px);
+  margin: 0 auto !important;
+  transform: none !important;
+  --tw-translate-x: 0px !important;
+  --tw-translate-y: 0px !important;
+  z-index: 6;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(26, 27, 28, 0.55);
+}
+
+.sk-compact .scan-capture {
+  position: fixed !important;
   top: auto !important;
-  right: 16px !important;
-  bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+  right: max(12px, env(safe-area-inset-right)) !important;
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
   left: auto !important;
-  z-index: 40;
+  z-index: 45;
+  max-width: calc(100vw - 88px);
   min-width: 44px;
   min-height: 44px;
+}
+
+.sk-compact .scan-capture-label {
+  text-shadow: 0 1px 2px rgba(26, 27, 28, 0.65);
+}
+
+/* Rings share one square sized from the smaller viewport edge, so a
+   landscape phone does not push the shutter off the bottom. */
+.sk-compact .scan-rings {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: min(78vw, 62dvh, 440px);
+  height: min(78vw, 62dvh, 440px);
+  transform: translate(-50%, -50%);
+}
+
+.sk-compact .scan-ring-outer {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+}
+
+.sk-compact .scan-ring-inner {
+  left: 16.5% !important;
+  top: 16.5% !important;
+  width: 67% !important;
+  height: 67% !important;
+  transform: none !important;
+}
+
+.sk-compact .scan-ring img {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.sk-compact .scan-rings .scan-shutter {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 22% !important;
+  height: auto !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.sk-compact .scan-frame > p.scan-status {
+  position: absolute !important;
+  top: auto !important;
+  right: 0 !important;
+  bottom: max(88px, 14dvh) !important;
+  left: 0 !important;
+  width: max-content !important;
+  max-width: calc(100% - 32px);
+  margin: 0 auto !important;
+  transform: none !important;
+  --tw-translate-x: 0px !important;
+  --tw-translate-y: 0px !important;
+  text-align: center;
 }
 
 .sk-compact [aria-label="Demographics"] button[style],
@@ -366,66 +464,108 @@ body {
   min-height: min(340px, 78vw);
 }
 
-/* The analysis diamonds sit near x=850 on the artboard. On a phone that
-   is off the screen, so the four choices become full-width rows. */
-.sk-compact [aria-label="A.I. analysis"] .sk-spin,
-.sk-compact [aria-label="A.I. analysis"] .sk-spin-outer,
-.sk-compact [aria-label="A.I. analysis"] .sk-spin-middle,
-.sk-compact [aria-label="A.I. analysis"] .sk-spin-inner {
-  display: none;
+/* The analysis cluster is measured from the outer 764 ring. Percentages
+   keep Demographics, Skin Type, Cosmetic Concerns, and Weather in the
+   same diamond arrangement once that ring fits the viewport. */
+.sk-compact .analysis-stage {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: min(92vw, 62dvh, 640px);
+  height: min(92vw, 62dvh, 640px);
+  transform: translate(-50%, -50%);
 }
 
-.sk-compact [aria-label="A.I. analysis"] .analysis-facet {
-  position: relative !important;
-  top: auto !important;
-  left: auto !important;
-  width: min(280px, calc(100% - 48px)) !important;
-  height: 56px !important;
-  margin: 8px auto !important;
-  clip-path: none !important;
-  z-index: 5;
-  background: #f3f3f4;
-}
-
-.sk-compact [aria-label="A.I. analysis"] .analysis-facet:first-of-type {
-  margin-top: 28vh !important;
-}
-
-.sk-compact [aria-label="Setting up camera"] span[style] {
-  left: 50% !important;
-  top: 16vh !important;
-  width: min(260px, 68vw) !important;
-  height: min(260px, 68vw) !important;
-  transform: translateX(-50%) !important;
-}
-
-.sk-compact [aria-label="Camera preview"] > p[class*="left-1/2"],
-.sk-compact [aria-label="Great shot"] > p[class*="left-1/2"],
-.sk-compact [aria-label="Setting up camera"] > p[class*="left-1/2"] {
+.sk-compact .analysis-stage .sk-spin {
   position: absolute !important;
-  top: 22vh !important;
-  left: 50% !important;
-  width: max-content !important;
-  max-width: calc(100% - 32px);
-  margin: 0;
-  transform: translateX(-50%) !important;
-  text-align: center;
 }
 
-.sk-compact [aria-label="Setting up camera"] > p[class*="left-1/2"] + p[class*="left-1/2"] {
-  top: 34vh !important;
+.sk-compact .analysis-stage .sk-spin-outer {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.sk-compact .analysis-stage .sk-spin-middle {
+  left: 5.2% !important;
+  top: 5.2% !important;
+  width: 89.5% !important;
+  height: 89.5% !important;
+}
+
+.sk-compact .analysis-stage .sk-spin-inner {
+  left: 10.5% !important;
+  top: 10.5% !important;
+  width: 79.1% !important;
+  height: 79.1% !important;
+}
+
+.sk-compact .analysis-stage img {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.sk-compact .analysis-stage .analysis-facet {
+  position: absolute !important;
+  margin: 0 !important;
+  width: 28.4% !important;
+  height: 28.4% !important;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%) !important;
+  z-index: 5;
+}
+
+.sk-compact .analysis-facet-demographics {
+  left: 35.8% !important;
+  top: 20.9% !important;
+}
+
+.sk-compact .analysis-facet-skin {
+  left: 21% !important;
+  top: 35.8% !important;
+}
+
+.sk-compact .analysis-facet-cosmetic {
+  left: 50.5% !important;
+  top: 35.8% !important;
+}
+
+.sk-compact .analysis-facet-weather {
+  left: 35.8% !important;
+  top: 50.5% !important;
+}
+
+.sk-compact .analysis-copy {
+  z-index: 6;
+  max-width: calc(100% - 32px);
 }
 
 .sk-compact .camera-tips {
   position: absolute;
   top: auto;
   right: 16px;
-  bottom: calc(72px + env(safe-area-inset-bottom));
+  bottom: max(16px, env(safe-area-inset-bottom));
   left: 16px;
   z-index: 5;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px 14px;
+  max-width: calc(100% - 32px);
+}
+
+.sk-compact [aria-label="Camera preview"] .camera-tips,
+.sk-compact [aria-label="Great shot"] .camera-tips {
+  bottom: calc(96px + env(safe-area-inset-bottom));
+}
+
+@media (max-height: 520px) {
+  .sk-compact .camera-tips,
+  .sk-compact .analysis-copy,
+  .sk-compact .scan-status {
+    display: none;
+  }
 }
 
 .sk-compact .camera-tips p {

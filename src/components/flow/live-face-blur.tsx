@@ -55,7 +55,7 @@ export function LiveFaceBlur({
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none absolute top-0 left-0 h-[960px] w-[1920px]"
+      className="scan-canvas pointer-events-none absolute top-0 left-0 h-[960px] w-[1920px]"
     />
   );
 }

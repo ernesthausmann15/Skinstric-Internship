@@ -17,6 +17,7 @@ const INK = "#1A1B1C";
 const FACETS = [
   {
     label: "Demographics",
+    slot: "demographics",
     lines: ["Demographics"],
     left: 851.5,
     top: 258,
@@ -24,6 +25,7 @@ const FACETS = [
   },
   {
     label: "Skin type details",
+    slot: "skin",
     lines: ["Skin Type", "Details"],
     left: 738.5,
     top: 371.75,
@@ -31,6 +33,7 @@ const FACETS = [
   },
   {
     label: "Cosmetic concerns",
+    slot: "cosmetic",
     lines: ["Cosmetic", "Concerns"],
     left: 963.5,
     top: 371.75,
@@ -38,6 +41,7 @@ const FACETS = [
   },
   {
     label: "Weather",
+    slot: "weather",
     lines: ["Weather"],
     left: 851.5,
     top: 484,
@@ -59,6 +63,10 @@ export function Layer3({
       className="relative h-[960px] w-[1920px] overflow-hidden bg-[#FCFCFC] text-[#1A1B1C]"
       aria-label="A.I. analysis"
     >
+      {/* `contents` keeps every diamond on the 1920 artboard. On a phone the
+          compact frame turns this into one square, and each ring is a
+          percentage of that square so the cluster scales without flattening. */}
+      <div className="analysis-stage contents">
       <DiamondOutline
         src="/layers/diamond-dotted-764.svg"
         width={764}
@@ -84,7 +92,7 @@ export function Layer3({
           type="button"
           aria-label={facet.label}
           onClick={facet.label === "Demographics" ? onDemographics : undefined}
-          className="analysis-facet absolute flex items-center justify-center border-0 p-0 text-center text-[14px] leading-[24px] font-semibold tracking-[-0.28px] text-[#1A1B1C] uppercase"
+          className={`analysis-facet analysis-facet-${facet.slot} absolute flex items-center justify-center border-0 p-0 text-center text-[14px] leading-[24px] font-semibold tracking-[-0.28px] text-[#1A1B1C] uppercase`}
           style={{
             left: facet.left,
             top: facet.top,
@@ -102,6 +110,7 @@ export function Layer3({
           </span>
         </button>
       ))}
+      </div>
 
       <header className="absolute top-0 left-0 h-[64px] w-[1920px]">
         <p className="absolute top-[23px] left-[32px] text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase">
@@ -114,10 +123,10 @@ export function Layer3({
         </p>
       </header>
 
-      <p className="absolute top-[86px] left-[32px] text-[16px] leading-[24px] font-semibold tracking-[-0.32px] uppercase">
+      <p className="analysis-copy absolute top-[86px] left-[32px] text-[16px] leading-[24px] font-semibold tracking-[-0.32px] uppercase">
         A. I. Analysis
       </p>
-      <p className="absolute top-[122px] left-[32px] text-[14px] leading-[24px] font-normal tracking-[0px] uppercase">
+      <p className="analysis-copy absolute top-[122px] left-[32px] text-[14px] leading-[24px] font-normal tracking-[0px] uppercase">
         A. I. has estimated the following.
         <br />
         Fix estimated information if needed.
