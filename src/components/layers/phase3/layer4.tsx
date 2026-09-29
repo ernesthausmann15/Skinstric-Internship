@@ -7,8 +7,8 @@ import type { FaceContour } from "@/lib/focus-face";
 /**
  * Phase 3, Layer 4 is the processing frame.
  * The upload or camera still is drawn here sharp, then the face scan and the
- * background blur run together. Proceed stays quiet until that fade ends,
- * including a second walk when the first silhouette clips the face.
+ * background blur run together. Proceed is available once that photo is
+ * visible, so a picture the scan does not lock can still continue.
  * This screen is the only place that picture is shown. Demographics never
  * receives it. Great Shot is the white line measured on the forehead.
  * Back returns to the live preview so the picture can be taken again.
@@ -18,6 +18,7 @@ export function Layer4({
   image,
   ready = false,
   scanning = false,
+  onOpen,
   onScanReady,
   onBack,
   onProceed,
@@ -25,6 +26,7 @@ export function Layer4({
   image: string | null;
   ready?: boolean;
   scanning?: boolean;
+  onOpen?: () => void;
   onScanReady?: (region: FaceContour | null) => void;
   onBack?: () => void;
   onProceed?: () => void;
@@ -35,7 +37,13 @@ export function Layer4({
       className="scan-frame relative h-[960px] w-[1920px] overflow-hidden bg-[#CDCDCB] text-[#FCFCFC]"
       aria-label="Great shot"
     >
-      {image ? <LiveFaceBlur image={image} onReady={(region) => onScanReady?.(region)} /> : null}
+      {image ? (
+        <LiveFaceBlur
+          image={image}
+          onOpen={onOpen}
+          onReady={(region) => onScanReady?.(region)}
+        />
+      ) : null}
 
       <header className="absolute top-0 left-0 h-[64px] w-[1920px]">
         <p className="absolute top-[23px] left-[32px] text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase">
