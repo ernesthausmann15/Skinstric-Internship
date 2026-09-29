@@ -50,6 +50,7 @@ export function AnalysisFlow() {
   const [place, setPlace] = useState("");
   const [introducing, setIntroducing] = useState(false);
   const [introError, setIntroError] = useState("");
+  const [notice, setNotice] = useState("");
   const [granted, setGranted] = useState(false);
   const [reading, setReading] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -104,6 +105,7 @@ export function AnalysisFlow() {
       setStep("setup");
     } catch {
       setGranted(false);
+      setNotice("Camera access was blocked. Allow the camera in the browser, or use the gallery.");
     }
   }
 
@@ -139,6 +141,7 @@ export function AnalysisFlow() {
       .then((faceOnly) => submitPortrait(faceOnly))
       .catch(() => {
         scanGuard.current = false;
+        setNotice("The face could not be prepared. Try another photo.");
       });
   }
 
@@ -158,13 +161,14 @@ export function AnalysisFlow() {
     } catch {
       // The blurred frame stays on the processing screen. Age and sex are not filled from an older picture.
       scanGuard.current = false;
+      setNotice("The portrait could not be read. Check the connection and try again.");
     } finally {
       if (id === readId.current) setReading(false);
     }
   }
 
   return (
-    <StageFrame>
+    <StageFrame notice={notice}>
       {step === "landing" ? <Landing onTakeTest={() => setStep("name")} /> : null}
       {step === "name" ? (
         <Layer3
@@ -258,7 +262,10 @@ export function AnalysisFlow() {
             }
             openCamera()
               .then(() => setStep("preview"))
-              .catch(() => setStep("choose"));
+              .catch(() => {
+                setNotice("Camera access was blocked. Allow the camera in the browser, or use the gallery.");
+                setStep("choose");
+              });
           }}
           onProceed={() => {
             if (face && frame && !reading) scanFace(face, frame);
@@ -292,30 +299,42 @@ export function AnalysisFlow() {
           if (!file) return;
           void readImageFile(file)
             .then((dataUrl) => prepareFrame(dataUrl))
-            .then((prepared) => holdFrame(prepared, "gallery"));
+            .then((prepared) => holdFrame(prepared, "gallery"))
+            .catch(() => setNotice("The image could not be read. Choose a different file."));
         }}
       />
     </StageFrame>
   );
 }
 
-function StageFrame({ children }: { children: ReactNode }) {
+function StageFrame({ children, notice }: { children: ReactNode; notice?: string }) {
   const [scale, setScale] = useState(1);
+  const [compact, setCompact] = useState(false);
 
   useEffect(() => {
-    // The artboard stays 1920×960. Phone and tablet windows scale that same
-    // frame to the visual viewport, so the camera and the forms stay on
-    // screen when the browser chrome or the orientation changes.
+    // Wide desktop keeps the 1920×960 artboard fitted to the window.
+    // Phones and tablets use the compact frame: full viewport width, no
+    // sideways scroll, and tap targets that stay at least 44px.
     const fit = () => {
-      const width = window.visualViewport?.width ?? window.innerWidth;
-      const height = window.visualViewport?.height ?? window.innerHeight;
-      setScale(Math.min(width / 1920, height / 960));
+      // Layout width is what CSS uses. The visual viewport can stay at the
+      // desktop pane size while a phone-sized layout is already in effect,
+      // so the smaller of the two decides the compact frame.
+      const width = Math.min(window.innerWidth, window.visualViewport?.width ?? window.innerWidth);
+      const height = Math.min(window.innerHeight, window.visualViewport?.height ?? window.innerHeight);
+      const nextCompact = width < 1280 || height < 640;
+      setCompact(nextCompact);
+      setScale(nextCompact ? 1 : Math.min(width / 1920, height / 960));
     };
     fit();
     window.addEventListener("resize", fit);
     window.addEventListener("orientationchange", fit);
     window.visualViewport?.addEventListener("resize", fit);
+    // Device emulation and mobile browser chrome change the layout box
+    // without a window resize. Watching the document catches both.
+    const observer = new ResizeObserver(fit);
+    observer.observe(document.documentElement);
     return () => {
+      observer.disconnect();
       window.removeEventListener("resize", fit);
       window.removeEventListener("orientationchange", fit);
       window.visualViewport?.removeEventListener("resize", fit);
@@ -323,13 +342,28 @@ function StageFrame({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="relative h-dvh w-dvw overflow-hidden bg-[#FCFCFC]" style={{ touchAction: "manipulation" }}>
-      <div
-        className="absolute top-1/2 left-1/2"
-        style={{ width: 1920, height: 960, transform: `translate(-50%, -50%) scale(${scale})` }}
-      >
-        {children}
-      </div>
+    <div
+      className={`sk-root relative h-dvh w-full bg-[#FCFCFC] ${compact ? "sk-compact overflow-x-hidden overflow-y-auto" : "overflow-hidden"}`}
+      style={{ touchAction: "manipulation" }}
+    >
+      {notice ? (
+        <p
+          role="alert"
+          className="fixed top-[72px] left-1/2 z-[60] w-[min(calc(100%-32px),480px)] -translate-x-1/2 bg-[#1A1B1C] px-4 py-3 text-center text-[12px] leading-[16px] font-semibold tracking-[0.4px] text-[#FCFCFC] uppercase"
+        >
+          {notice}
+        </p>
+      ) : null}
+      {compact ? (
+        <div className="sk-board relative min-h-dvh w-full">{children}</div>
+      ) : (
+        <div
+          className="absolute top-1/2 left-1/2"
+          style={{ width: 1920, height: 960, transform: `translate(-50%, -50%) scale(${scale})` }}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 }

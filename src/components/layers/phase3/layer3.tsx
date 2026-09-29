@@ -164,7 +164,9 @@ export function Layer3({
 
 function Checklist() {
   return (
-    <>
+    // `contents` keeps these absolutely placed on the 1920 artboard.
+    // The compact frame turns this box into a wrapping row above the nav.
+    <div className="camera-tips contents">
       <p className="absolute top-[858px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-normal tracking-[0.6px] uppercase">
         To get better results make sure to have
       </p>
@@ -178,7 +180,7 @@ function Checklist() {
           {tip.label}
         </p>
       ))}
-    </>
+    </div>
   );
 }
 

@@ -118,3 +118,353 @@ body {
   transition-duration: 700ms;
   transition-timing-function: ease;
 }
+
+/*
+  Phones and tablets leave the 1920 artboard. The compact frame is the
+  viewport width, so nothing can scroll sideways, and every control keeps
+  a 44px tap size in real pixels instead of shrinking with the desktop scale.
+*/
+.sk-compact {
+  overflow-x: clip;
+}
+
+.sk-compact section {
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+  min-height: 100dvh;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding-bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+.sk-compact [class*="w-[1920px]"] {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+.sk-compact h1 {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  max-width: 100%;
+  margin: 18vh auto 0;
+  font-size: clamp(40px, 12vw, 72px) !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.04em !important;
+  text-align: center !important;
+}
+
+.sk-compact [class*="left-[1719px]"],
+.sk-compact [class*="left-[1208px]"],
+.sk-compact [class*="left-[1538px]"],
+.sk-compact [class*="left-[1578px]"],
+.sk-compact [class*="left-[1618px]"] {
+  display: none !important;
+}
+
+.sk-compact .sk-nav,
+.sk-compact .phase2-back {
+  position: fixed !important;
+  top: auto !important;
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  z-index: 40;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.sk-compact .sk-nav[class*="left-"],
+.sk-compact .phase2-back {
+  left: 12px !important;
+  right: auto !important;
+}
+
+.sk-compact .sk-nav[class*="right-"],
+.sk-compact .sk-nav[class*="justify-end"],
+.sk-compact .sk-nav[class*="left-[1765px]"] {
+  left: auto !important;
+  right: 12px !important;
+}
+
+.sk-compact input:not([type="file"]) {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  display: block;
+  width: min(calc(100% - 32px), 36rem) !important;
+  margin: 12px auto 0;
+  border-bottom: 1px solid #1a1b1c;
+  font-size: clamp(28px, 8vw, 48px) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.04em !important;
+  min-height: 48px;
+}
+
+.sk-compact input:not([type="file"]) + div {
+  display: none;
+}
+
+.sk-compact section > p[class*="opacity-40"] {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  margin: 22vh auto 0;
+  transform: none !important;
+  text-align: center;
+}
+
+.sk-compact section > p[class*="left-1/2"] {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  margin: 12px auto 0;
+  transform: none !important;
+  text-align: center;
+}
+
+.sk-compact .phase2-choice {
+  position: relative !important;
+  top: auto !important;
+  left: 0 !important;
+  right: auto !important;
+  display: block;
+  width: min(calc(100% - 32px), 420px) !important;
+  height: 240px !important;
+  margin: 16px auto;
+}
+
+.sk-compact [aria-label="Choose how to start analysis"] .phase2-choice:first-of-type,
+.sk-compact [aria-label="Allow camera access"] .phase2-choice:first-of-type {
+  margin-top: 128px;
+}
+
+.sk-compact .phase2-choice .phase2-spin {
+  display: none;
+}
+
+.sk-compact .phase2-choice > img,
+.sk-compact .phase2-choice > .phase2-dash {
+  left: 50% !important;
+  top: 28px !important;
+  transform: translateX(-50%);
+}
+
+.sk-compact .phase2-choice > img:last-of-type {
+  display: none;
+}
+
+.sk-compact .phase2-choice > p {
+  left: 12px !important;
+  right: 12px !important;
+  top: auto !important;
+  bottom: 16px !important;
+  width: auto !important;
+  text-align: center !important;
+  background: #fcfcfc;
+  z-index: 2;
+}
+
+.sk-compact [role="dialog"] {
+  left: 50% !important;
+  top: auto !important;
+  bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+  width: min(352px, calc(100vw - 32px)) !important;
+  transform: translateX(-50%);
+}
+
+.sk-compact [role="dialog"] button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 12px 8px;
+}
+
+.sk-compact [aria-label="Camera preview"],
+.sk-compact [aria-label="Great shot"] {
+  height: 100dvh !important;
+  min-height: 100dvh;
+  padding: 0;
+}
+
+.sk-compact [aria-label="Camera preview"] canvas,
+.sk-compact [aria-label="Great shot"] canvas {
+  width: 100% !important;
+  height: 100dvh !important;
+}
+
+.sk-compact [aria-label="Camera preview"] button:not(.sk-nav) {
+  top: auto !important;
+  right: 16px !important;
+  bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+  left: auto !important;
+  z-index: 40;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.sk-compact [aria-label="Demographics"] button[style],
+.sk-compact [aria-label="Demographics"] [class*="top-[306px]"] {
+  position: relative !important;
+  top: auto !important;
+  left: 0 !important;
+  right: auto !important;
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+  margin-top: 12px;
+}
+
+.sk-compact [aria-label="Demographics"] button[style] {
+  left: 16px !important;
+  width: calc(100% - 32px) !important;
+  max-width: 420px;
+  min-height: 72px;
+}
+
+/* The age pager is a pair of diamonds beside the title. The shared nav
+   rule would otherwise pin both of them on top of Back. */
+.sk-compact .sk-nav[aria-label="Previous demographic"],
+.sk-compact .sk-nav[aria-label="Next demographic"] {
+  position: absolute !important;
+  top: 112px !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 30;
+}
+
+.sk-compact .sk-nav[aria-label="Previous demographic"] {
+  right: 68px !important;
+}
+
+.sk-compact .sk-nav[aria-label="Next demographic"] {
+  right: 16px !important;
+}
+
+.sk-compact [aria-label="Demographics"] button[class*="left-[1703px]"],
+.sk-compact [aria-label="Demographics"] button[class*="left-[1793px]"] {
+  position: fixed !important;
+  top: auto !important;
+  bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  height: 44px !important;
+  min-height: 44px;
+  z-index: 40;
+}
+
+.sk-compact [aria-label="Demographics"] button[class*="left-[1703px]"] {
+  left: auto !important;
+  right: 116px !important;
+}
+
+.sk-compact [aria-label="Demographics"] button[class*="left-[1793px]"] {
+  left: auto !important;
+  right: 12px !important;
+}
+
+.sk-compact [aria-label="Demographics"] [class*="left-[255px]"] {
+  min-height: min(340px, 78vw);
+}
+
+/* The analysis diamonds sit near x=850 on the artboard. On a phone that
+   is off the screen, so the four choices become full-width rows. */
+.sk-compact [aria-label="A.I. analysis"] .sk-spin,
+.sk-compact [aria-label="A.I. analysis"] .sk-spin-outer,
+.sk-compact [aria-label="A.I. analysis"] .sk-spin-middle,
+.sk-compact [aria-label="A.I. analysis"] .sk-spin-inner {
+  display: none;
+}
+
+.sk-compact [aria-label="A.I. analysis"] .analysis-facet {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: min(280px, calc(100% - 48px)) !important;
+  height: 56px !important;
+  margin: 8px auto !important;
+  clip-path: none !important;
+  z-index: 5;
+  background: #f3f3f4;
+}
+
+.sk-compact [aria-label="A.I. analysis"] .analysis-facet:first-of-type {
+  margin-top: 28vh !important;
+}
+
+.sk-compact [aria-label="Setting up camera"] span[style] {
+  left: 50% !important;
+  top: 16vh !important;
+  width: min(260px, 68vw) !important;
+  height: min(260px, 68vw) !important;
+  transform: translateX(-50%) !important;
+}
+
+.sk-compact [aria-label="Camera preview"] > p[class*="left-1/2"],
+.sk-compact [aria-label="Great shot"] > p[class*="left-1/2"],
+.sk-compact [aria-label="Setting up camera"] > p[class*="left-1/2"] {
+  position: absolute !important;
+  top: 22vh !important;
+  left: 50% !important;
+  width: max-content !important;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  transform: translateX(-50%) !important;
+  text-align: center;
+}
+
+.sk-compact [aria-label="Setting up camera"] > p[class*="left-1/2"] + p[class*="left-1/2"] {
+  top: 34vh !important;
+}
+
+.sk-compact .camera-tips {
+  position: absolute;
+  top: auto;
+  right: 16px;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+  left: 16px;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.sk-compact .camera-tips p {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  width: auto !important;
+  margin: 0;
+  transform: none !important;
+}
+
+.sk-compact header button {
+  min-height: 44px;
+}
+
+.sk-compact [aria-label="Skinstric introduction"] .sk-spin {
+  display: none;
+}
+
+.sk-compact [aria-label="Skinstric introduction"] > p {
+  position: relative !important;
+  top: auto !important;
+  left: 16px !important;
+  width: calc(100% - 32px) !important;
+  margin-top: 24px;
+}
+
+.sk-compact [aria-label="Demographics"] [class*="h-[383px]"] {
+  left: 50% !important;
+  width: min(280px, 72vw) !important;
+  height: min(280px, 72vw) !important;
+  transform: translateX(-50%);
+}
+
+.sk-compact [aria-label="Demographics"] [class*="h-[383px]"] svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sk-compact [aria-label="Demographics"] ul button {
+  min-height: 48px;
+}
