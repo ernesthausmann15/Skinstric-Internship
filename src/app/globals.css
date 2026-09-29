@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/*
+  Roobert TRIAL is the typeface on the Skinstric frame (Light 128, SemiBold 14/10,
+  Regular 14). It is a commercial trial cut, so it is referenced by name and used
+  when the font is installed. The fallbacks keep the layout readable otherwise.
+*/
+:root {
+  --font-skinstric: "Roobert TRIAL", "Roobert", "Avenir Next", "Segoe UI", sans-serif;
+  --canvas: #fcfcfc;
+  --ink: #1a1b1c;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-skinstric);
+}
+
+/*
+  Dotted diamonds turn for the whole intro, on the landing screen and on the
+  analysis screen. Outer, middle, and inner rings each keep their own speed.
+  The right landing diamond is the mirror of the left one.
+*/
+@keyframes skinstric-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sk-spin,
+.phase2-spin {
+  transform-origin: center;
+  animation-name: skinstric-spin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.sk-spin-outer,
+.phase2-spin-outer {
+  animation-duration: 36s;
+}
+
+.sk-spin-middle,
+.phase2-spin-middle {
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+
+.sk-spin-inner,
+.phase2-spin-inner {
+  animation-duration: 16s;
+}
+
+.sk-spin-reverse {
+  animation-direction: reverse;
+}
+
+/*
+  Diamond nav buttons ship with an inner dash at opacity 0. Hover fades that
+  dash in and lifts the label from 70% to full ink. Phase 2's camera and
+  gallery rings use the same spin, and their dashed circle stays hidden until
+  that choice is hovered.
+*/
+.sk-nav-dash,
+.phase2-back-dash {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sk-nav:hover .sk-nav-dash,
+.sk-nav:focus-visible .sk-nav-dash,
+.phase2-back:hover .phase2-back-dash {
+  opacity: 1;
+}
+
+.sk-nav:hover .sk-nav-label,
+.sk-nav:focus-visible .sk-nav-label,
+.phase2-back:hover .phase2-back-label {
+  opacity: 1;
+}
+
+.phase2-dash {
+  opacity: 0;
+  transform-origin: center;
+  animation: skinstric-spin 10s linear infinite;
+  transition: opacity 0.4s ease;
+}
+
+.phase2-choice:hover .phase2-dash,
+.phase2-choice:focus-visible .phase2-dash,
+.phase3-camera .phase2-dash,
+.phase2-setup .phase2-dash,
+.phase3-setup .phase2-dash {
+  opacity: 1;
+}
+
+/*
+  Analysis diamonds rest at the light fill. Hover darkens the diamond under
+  the pointer to the gray measured on Demographics in the result frame.
+*/
+.analysis-facet {
+  background: #f3f3f4;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.analysis-facet:hover,
+.analysis-facet:focus-visible {
+  background: #e1e1e2;
+}
+
+/* Headline and diamond rings slide between the resting frame and a side hover. */
+.sk-move {
+  transition-property: left, top, opacity;
+  transition-duration: 700ms;
+  transition-timing-function: ease;
+}
