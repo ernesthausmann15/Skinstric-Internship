@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { isPersonText } from "@/lib/customer";
 
 /**
  * Layer 3 is Figma frame "002" (node 12:15687).
@@ -13,13 +13,18 @@ import { useState } from "react";
 const INK = "#1A1B1C";
 
 export function Layer3({
+  value,
+  onChange,
   onBack,
   onSubmit,
 }: {
+  value: string;
+  onChange: (name: string) => void;
   onBack?: () => void;
-  onSubmit?: (name: string) => void;
+  onSubmit?: () => void;
 }) {
-  const [name, setName] = useState("");
+  const ready = isPersonText(value);
+  const invalid = value.trim().length > 0 && !ready;
   return (
     <section
       className="relative h-[960px] w-[1920px] overflow-hidden bg-[#FCFCFC] text-[#1A1B1C]"
@@ -64,26 +69,48 @@ export function Layer3({
       </p>
 
       <input
-        value={name}
-        onChange={(event) => setName(event.target.value)}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key === "Enter" && name.trim()) onSubmit?.(name.trim());
+          if (event.key === "Enter" && ready) onSubmit?.();
         }}
         placeholder="Introduce Yourself"
         aria-label="Introduce Yourself"
+        aria-invalid={invalid}
+        autoCapitalize="words"
+        autoCorrect="off"
         className="absolute top-[448px] left-[750px] w-[420px] border-0 bg-transparent p-0 text-center text-[60px] leading-[64px] font-normal tracking-[-4.2px] text-[#1A1B1C] outline-none placeholder:text-[#1A1B1C]"
       />
       <div className="absolute top-[512px] left-[751px] h-px w-[417px] bg-[#1A1B1C]" />
+      {invalid ? (
+        <p className="absolute top-[528px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-semibold tracking-[0.4px] uppercase opacity-50">
+          Letters only
+        </p>
+      ) : null}
 
       <button
         type="button"
         onClick={onBack}
         className="sk-nav absolute top-[880px] left-[32px] flex h-[44px] items-center gap-[16px] border-0 bg-transparent p-0 font-[inherit] text-inherit"
       >
-        <DiamondButton />
+        <DiamondButton direction="left" />
         <span className="sk-nav-label text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase opacity-70 transition-opacity duration-300">
           back
         </span>
+      </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          if (ready) onSubmit?.();
+        }}
+        disabled={!ready}
+        className="sk-nav absolute top-[880px] left-[1765px] flex h-[44px] w-[123px] items-center justify-end gap-[16px] border-0 bg-transparent p-0 font-[inherit] text-inherit disabled:cursor-default disabled:opacity-30"
+      >
+        <span className="sk-nav-label w-[63px] text-right text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase opacity-70 transition-opacity duration-300">
+          proceed
+        </span>
+        <DiamondButton direction="right" />
       </button>
     </section>
   );
@@ -123,7 +150,12 @@ function Bracket({ side }: { side: "left" | "right" }) {
   );
 }
 
-function DiamondButton() {
+function DiamondButton({ direction }: { direction: "left" | "right" }) {
+  const triangle =
+    direction === "left"
+      ? "M15.7144 22L25.1429 27.4436V16.5564L15.7144 22Z"
+      : "M27.436 22L18.007 27.4436V16.5564L27.436 22Z";
+
   return (
     <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
       <path
@@ -136,7 +168,7 @@ function DiamondButton() {
         stroke={INK}
         strokeDasharray="1 4"
       />
-      <path d="M15.7144 22L25.1429 27.4436V16.5564L15.7144 22Z" fill={INK} />
+      <path d={triangle} fill={INK} />
     </svg>
   );
 }

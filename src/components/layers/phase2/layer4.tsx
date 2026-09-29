@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ConfidenceScore, PortraitAnalysis } from "@/lib/analyze-portrait";
+import { formatScore, type ConfidenceScore, type PortraitAnalysis } from "@/lib/analyze-portrait";
 import { ConfidenceCircle } from "@/components/layers/phase2/confidence-circle";
 
 /**
@@ -156,9 +156,12 @@ export function Layer4({
                 <button
                   type="button"
                   aria-pressed={active}
-                  onClick={() =>
-                    setPicked((current) => ({ ...current, [group.id]: index }))
-                  }
+                  onClick={() => {
+                    // The row is the visitor's correction. The matching card
+                    // on the left reads this same index, so the sidebar name
+                    // changes on this click.
+                    setPicked((current) => ({ ...current, [group.id]: index }));
+                  }}
                   className={`flex h-[49px] w-full cursor-pointer items-center gap-[12px] border-0 px-[16px] text-left text-[14px] leading-[16px] font-semibold tracking-[-0.28px] transition-colors duration-300 ${
                     active
                       ? "bg-[#1A1B1C] text-[#FCFCFC]"
@@ -167,7 +170,7 @@ export function Layer4({
                 >
                   <DiamondMark filled={active} />
                   <span className="flex-1">{option.name}</span>
-                  <span>{option.value} %</span>
+                  <span>{formatScore(option.value)} %</span>
                 </button>
               </li>
             );
