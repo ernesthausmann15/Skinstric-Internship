@@ -48,9 +48,11 @@ const FACETS = [
 export function Layer3({
   onBack,
   onSummary,
+  onDemographics,
 }: {
   onBack?: () => void;
   onSummary?: () => void;
+  onDemographics?: () => void;
 }) {
   return (
     <section
@@ -81,6 +83,7 @@ export function Layer3({
           key={facet.label}
           type="button"
           aria-label={facet.label}
+          onClick={facet.label === "Demographics" ? onDemographics : undefined}
           className="analysis-facet absolute flex items-center justify-center border-0 p-0 text-center text-[14px] leading-[24px] font-semibold tracking-[-0.28px] text-[#1A1B1C] uppercase"
           style={{
             left: facet.left,
