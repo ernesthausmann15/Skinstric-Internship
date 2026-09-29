@@ -91,20 +91,22 @@ export function Layer2({ status = "Setting up camera ..." }: { status?: string }
         {status}
       </p>
 
-      <p className="absolute top-[731px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-normal tracking-[0.6px] uppercase">
-        To get better results make sure to have
-      </p>
-
-      {TIPS.map((tip) => (
-        <p
-          key={tip.label}
-          className="absolute top-[770px] flex items-center gap-[6px] text-[12px] leading-[16px] font-normal tracking-[0.4px] uppercase"
-          style={{ left: tip.bullet }}
-        >
-          <Bullet />
-          {tip.label}
+      <div className="camera-tips contents">
+        <p className="absolute top-[731px] left-1/2 w-max -translate-x-1/2 text-[12px] leading-[16px] font-normal tracking-[0.6px] uppercase">
+          To get better results make sure to have
         </p>
-      ))}
+
+        {TIPS.map((tip) => (
+          <p
+            key={tip.label}
+            className="absolute top-[770px] flex items-center gap-[6px] text-[12px] leading-[16px] font-normal tracking-[0.4px] uppercase"
+            style={{ left: tip.bullet }}
+          >
+            <Bullet />
+            {tip.label}
+          </p>
+        ))}
+      </div>
     </section>
   );
 }
