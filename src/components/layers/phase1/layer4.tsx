@@ -17,11 +17,13 @@ export function Layer4({
   onChange,
   onBack,
   onSubmit,
+  pending = false,
 }: {
   value: string;
   onChange: (place: string) => void;
   onBack?: () => void;
   onSubmit?: () => void;
+  pending?: boolean;
 }) {
   const ready = isPersonText(value);
   const invalid = value.trim().length > 0 && !ready;
@@ -102,9 +104,9 @@ export function Layer4({
       <button
         type="button"
         onClick={() => {
-          if (ready) onSubmit?.();
+          if (ready && !pending) onSubmit?.();
         }}
-        disabled={!ready}
+        disabled={!ready || pending}
         className="sk-nav absolute top-[880px] left-[1765px] flex h-[44px] w-[123px] items-center justify-end gap-[16px] border-0 bg-transparent p-0 font-[inherit] text-inherit disabled:cursor-default disabled:opacity-30"
       >
         <span className="sk-nav-label w-[63px] text-right text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase opacity-70 transition-opacity duration-300">

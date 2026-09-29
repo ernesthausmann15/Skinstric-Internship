@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Landing } from "@/components/layers/phase1/landing";
 import { Layer3 } from "@/components/layers/phase1/layer3";
 import { Layer4 } from "@/components/layers/phase1/layer4";
-import { Layer5 } from "@/components/layers/phase1/layer5";
 import { Layer1 as ChooseSource } from "@/components/layers/phase2/layer1";
 import { Layer3 as AnalysisResult } from "@/components/layers/phase2/layer3";
 import { Layer4 as Demographics } from "@/components/layers/phase2/layer4";
@@ -20,7 +19,6 @@ type Step =
   | "landing"
   | "name"
   | "place"
-  | "confirm"
   | "choose"
   | "camera"
   | "setup"
@@ -31,8 +29,8 @@ type Step =
 
 /**
  * One path through the intro. The landing headline slides as the pointer
- * changes sides, Take Test walks name → city → confirmation, Proceed opens
- * the camera-or-gallery choice, and the camera choice opens the permission
+ * changes sides, Take Test walks name then city. The city Proceed saves
+ * that pair and opens the camera-or-gallery choice. The camera choice opens the permission
  * card. Allow keeps the camera open through setup and into the live preview.
  * A gallery file and a camera still both open sharp. The face scan and the
  * background blur then run for the same stretch of time, and a clipped face
@@ -197,29 +195,18 @@ export function AnalysisFlow() {
           value={place}
           onChange={setPlace}
           onBack={() => setStep("name")}
-          onSubmit={() => {
-            if (isPersonText(place)) setStep("confirm");
-          }}
-        />
-      ) : null}
-      {step === "confirm" ? (
-        <Layer5
-          city={place}
           pending={introducing}
-          error={introError}
-          onBack={() => {
-            if (introducing) return;
-            setIntroError("");
-            setStep("place");
-          }}
-          onProceed={() => {
-            void proceedFromIntro();
+          onSubmit={() => {
+            if (isPersonText(place)) void proceedFromIntro();
           }}
         />
       ) : null}
       {!reading && step === "choose" ? (
         <ChooseSource
-          onBack={() => setStep("confirm")}
+          onBack={() => {
+            if (introducing) return;
+            setStep("place");
+          }}
           onCamera={() => {
             stopCamera();
             setFrame(null);

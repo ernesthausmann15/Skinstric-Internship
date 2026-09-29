@@ -13,7 +13,7 @@ export function ConfidenceCircle({ value }: { value: number | null }) {
   const offset = circumference * (1 - percent / 100);
 
   return (
-    <div className="absolute top-[135px] left-[769px] h-[383px] w-[383px]">
+    <div className="demo-ring absolute top-[135px] left-[769px] h-[383px] w-[383px]">
       <svg
         width={size}
         height={size}

@@ -63,9 +63,29 @@ export function Layer3({
       className="relative h-[960px] w-[1920px] overflow-hidden bg-[#FCFCFC] text-[#1A1B1C]"
       aria-label="A.I. analysis"
     >
-      {/* `contents` keeps every diamond on the 1920 artboard. On a phone the
-          compact frame turns this into one square, and each ring is a
-          percentage of that square so the cluster scales without flattening. */}
+      <header className="absolute top-0 left-0 h-[64px] w-[1920px]">
+        <p className="absolute top-[23px] left-[32px] text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase">
+          Skinstric
+        </p>
+        <p className="absolute top-[23px] left-[117px] flex h-[17px] items-center gap-[6px] text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase opacity-60">
+          <Bracket side="left" />
+          Analysis
+          <Bracket side="right" />
+        </p>
+      </header>
+
+      <p className="analysis-copy absolute top-[86px] left-[32px] text-[16px] leading-[24px] font-semibold tracking-[-0.32px] uppercase">
+        A. I. Analysis
+      </p>
+      <p className="analysis-copy absolute top-[122px] left-[32px] text-[14px] leading-[24px] font-normal tracking-[0px] uppercase">
+        A. I. has estimated the following.
+        <br />
+        Fix estimated information if needed.
+      </p>
+
+      {/* `contents` keeps every diamond on the 1920 artboard. On a phone this
+          box is the four-facet cluster only, so each label has a diamond
+          large enough to read. */}
       <div className="analysis-stage contents">
       <DiamondOutline
         src="/layers/diamond-dotted-764.svg"
@@ -101,9 +121,9 @@ export function Layer3({
             clipPath: "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
           }}
         >
-          <span>
+          <span className="facet-label">
             {facet.lines.map((line) => (
-              <span key={line} className="block">
+              <span key={line} className="block whitespace-nowrap">
                 {line}
               </span>
             ))}
@@ -111,26 +131,6 @@ export function Layer3({
         </button>
       ))}
       </div>
-
-      <header className="absolute top-0 left-0 h-[64px] w-[1920px]">
-        <p className="absolute top-[23px] left-[32px] text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase">
-          Skinstric
-        </p>
-        <p className="absolute top-[23px] left-[117px] flex h-[17px] items-center gap-[6px] text-[14px] leading-[16px] font-semibold tracking-[-0.28px] uppercase opacity-60">
-          <Bracket side="left" />
-          Analysis
-          <Bracket side="right" />
-        </p>
-      </header>
-
-      <p className="analysis-copy absolute top-[86px] left-[32px] text-[16px] leading-[24px] font-semibold tracking-[-0.32px] uppercase">
-        A. I. Analysis
-      </p>
-      <p className="analysis-copy absolute top-[122px] left-[32px] text-[14px] leading-[24px] font-normal tracking-[0px] uppercase">
-        A. I. has estimated the following.
-        <br />
-        Fix estimated information if needed.
-      </p>
 
       <button
         type="button"
